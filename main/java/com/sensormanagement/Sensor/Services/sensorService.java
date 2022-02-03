@@ -24,6 +24,9 @@ public class sensorService {
             sensor.setCreationTime(request.getCreationTime());
             sensor.setOrgId(request.getOrgId());
             sensor.setSensorName(request.getSensorName());
+            sensor.setThreshold(request.getThreshold());
+            sensor.setLicenseId(request.getLicenseId());
+            sensor.setVarkey(request.getVarkey());
             sensor.setStatus(true);
             sr.save(sensor);
             opMsg = "! New sensor saved to your repository !";
