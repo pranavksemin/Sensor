@@ -1,11 +1,15 @@
 package com.sensormanagement.Sensor.Models;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.lang.Nullable;
+import org.json.JSONObject;
 
 @Document(collection = "Sensor")
 public class Model {
@@ -20,10 +24,19 @@ public class Model {
     private String threshold;
     private LocalDateTime creationTime;
     private String licenseId;
+
+    @Nullable
+    private JSONObject varkey;
+
+
+
+
+
     public Model() {
     }
 
-    public Model(String id, String userId, String sensorName, String orgId, boolean status, String threshold,LocalDateTime creationTime, String licenseId) {
+
+    public Model(String id, String userId, String sensorName, String orgId, boolean status, String threshold, LocalDateTime creationTime, String licenseId, @Nullable JSONObject varkey) {
         this.id = id;
         this.userId = userId;
         this.sensorName = sensorName;
@@ -32,6 +45,17 @@ public class Model {
         this.threshold = threshold;
         this.creationTime = creationTime;
         this.licenseId = licenseId;
+        this.varkey = varkey;
+    }
+
+
+    @Nullable
+    public JSONObject getVarkey() {
+        return varkey;
+    }
+
+    public void setVarkey(@Nullable JSONObject varkey) {
+        this.varkey = varkey;
     }
 
     public String getLicenseId() {
