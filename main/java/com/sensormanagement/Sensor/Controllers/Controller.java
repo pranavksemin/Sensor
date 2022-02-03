@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
+
 @RestController
 public class Controller {
 
@@ -23,47 +25,57 @@ public class Controller {
     @Autowired
     sensorService service;
     @PostMapping("/Sensor")
-    public Response createSensor(@RequestBody Model sensor)
+    public Response createSensor(@RequestBody Model request)
     {
         String msg="";
         LocalDateTime creationTime;
         creationTime = LocalDateTime.now();
         Response response = new Response();
-        sensor.setStatus(true);
+        request.setStatus(true);
 
-        sensor.setCreationTime(creationTime);
-        String url = "http://localhost:8081/User/"+sensor.getUserId();
+        request.setCreationTime(creationTime);
+        String url = "http://localhost:8081/User/"+request.getUserId();
 
-        System.out.println(sensor.getUserId());
-        if(sensor!=null)
+
+        if(request!=null)
         {
-            System.out.println(restTemplate.getForObject(url,userModel.class));
-            if(restTemplate.getForObject(url,userModel.class) != null)
-            {
+
+            System.out.println("The Threshold Values "+request.getThreshold());
+            System.out.println("The License Value "+request.getLicenseId());
+            System.out.println("The ID is "+request.getId());
+                if (restTemplate.getForObject(url, userModel.class) != null)
+                {
+                    System.out.print(service.getSensorById(request.getId()));
+                    if(service.getSensorById(request.getId()).isEmpty())
+                    {
 
 
-                try {
-                    msg = service.create(sensor);
-                    response.setMsg(msg);
-                    response.setSuccess(true);
+                        try {
+                            msg = service.create(request);
+                            response.setMsg(msg);
+                            response.setSuccess(true);
 
-                } catch (Exception e) {
-                    response.setMsg(msg);
-                    response.setSuccess(false);
+                        } catch (Exception e) {
+                            response.setMsg(msg);
+                            response.setSuccess(false);
 
+                        }
+                    }
+                    else {
+                        response.setSuccess(false);
+                        response.setMsg("! Sensor Already Exist !");
+                    }
                 }
-            }
-            else
-            {
-                response.setMsg("! UserId cannot be found !");
-                response.setSuccess(false);
-            }
+                else {
+                    response.setMsg("! UserId cannot be found !");
+                    response.setSuccess(false);
+                }
 
 
         }
         else
         {
-            response.setMsg("Request cannot be Null");
+            response.setMsg("! Request cannot be Null !");
             response.setSuccess(false);
         }
         return response;
